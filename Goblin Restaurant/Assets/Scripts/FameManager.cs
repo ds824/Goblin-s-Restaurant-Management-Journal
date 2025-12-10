@@ -55,7 +55,7 @@ public class FameManager : MonoBehaviour
 
         UpdateFameLevel();
         OnFameChanged?.Invoke();
-        Debug.Log($"¸í¼ºµµ {amount} Áõ°¡. ÇöÀç Á¡¼ö: {CurrentFamePoints}");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {amount} ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {CurrentFamePoints}");
     }
 
     public void DecreaseFame(float amount)
@@ -65,7 +65,7 @@ public class FameManager : MonoBehaviour
 
         UpdateFameLevel();
         OnFameChanged?.Invoke();
-        Debug.Log($"¸í¼ºµµ {amount} °¨¼Ò. ÇöÀç Á¡¼ö: {CurrentFamePoints}");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {amount} ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {CurrentFamePoints}");
     }
 
     private void UpdateFameLevel()
@@ -86,8 +86,8 @@ public class FameManager : MonoBehaviour
 
         if (QuestManager.Instance != null)
         {
-            // TargetType.Level, Å°¿öµå "¸í¼ºµµ ·¹º§"
-            QuestManager.Instance.SetProgress(QuestTargetType.Level, "½Ä´ç ¸í¼ºµµ ·¹º§", CurrentFameLevel);
+            // TargetType.Level, Å°ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"
+            QuestManager.Instance.SetProgress(QuestTargetType.Level, "ï¿½Ä´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", CurrentFameLevel);
         }
     }
 
@@ -104,5 +104,16 @@ public class FameManager : MonoBehaviour
         float pointsNeededForThisLevel = nextThreshold - prevThreshold;
 
         return pointsInThisLevel / pointsNeededForThisLevel;
+    }
+
+    /// <summary>
+    /// ì„¸ì´ë¸Œ/ë¡œë“œë¥¼ ìœ„í•´ ëª…ì„±ë„ ë°ì´í„°ë¥¼ ì§ì ‘ ì„¤ì •í•©ë‹ˆë‹¤.
+    /// </summary>
+    public void SetFameData(float points, int level)
+    {
+        CurrentFamePoints = points;
+        CurrentFameLevel = level;
+        OnFameChanged?.Invoke();
+        Debug.Log($"ëª…ì„±ë„ ë°ì´í„° ë¡œë“œë¨: í¬ì¸íŠ¸ {CurrentFamePoints}, ë ˆë²¨ {CurrentFameLevel}");
     }
 }

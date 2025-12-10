@@ -41,7 +41,12 @@ public class GameManager : MonoBehaviour
     public int totalGoldAmount = 0;
     private int todaysGold = 0;
     private int todaysCustomers = 0;
-    [SerializeField] private int DayCount = 1;
+    [SerializeField] private int _dayCount = 1;
+    public int DayCount
+    {
+        get { return _dayCount; }
+        set { _dayCount = value; }
+    }
     private Camera mainCamera;
 
     [Header("주인공 설정")]
@@ -599,5 +604,37 @@ public class GameManager : MonoBehaviour
         UpdateLockedButtons();
         if (NotificationController.instance != null)
             NotificationController.instance.ShowNotification("직원 관리 기능이 해금되었습니다!");
+    }
+
+    // ========== 저장/로드 기능 ==========
+
+    /// <summary>
+    /// 게임을 저장합니다. UI 버튼에서 호출할 수 있습니다.
+    /// </summary>
+    public void SaveGame()
+    {
+        if (SaveLoadManager.Instance != null)
+        {
+            SaveLoadManager.Instance.SaveGame();
+        }
+        else
+        {
+            Debug.LogError("[GameManager] SaveLoadManager를 찾을 수 없습니다!");
+        }
+    }
+
+    /// <summary>
+    /// 게임을 로드합니다. UI 버튼에서 호출할 수 있습니다.
+    /// </summary>
+    public void LoadGame()
+    {
+        if (SaveLoadManager.Instance != null)
+        {
+            SaveLoadManager.Instance.LoadGame();
+        }
+        else
+        {
+            Debug.LogError("[GameManager] SaveLoadManager를 찾을 수 없습니다!");
+        }
     }
 }

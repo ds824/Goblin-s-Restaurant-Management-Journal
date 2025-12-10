@@ -8563,7 +8563,7 @@ MonoBehaviour:
   _currentState: 0
   dayDurationInSeconds: 45
   totalGoldAmount: 99999
-  DayCount: 7
+  _dayCount: 1
   mainCharacterTemplate: {fileID: 11400000, guid: 73599de3c8e5a6a41a97a5583acee7e8, type: 2}
   upgradeTableButtons:
   - {fileID: 1616242648}
@@ -10673,6 +10673,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1197903081}
   m_CullTransparentMesh: 1
+--- !u!1 &1201474549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1201474552}
+  - component: {fileID: 1201474551}
+  - component: {fileID: 1201474550}
+  m_Layer: 0
+  m_Name: SaveLoadManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1201474550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201474549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 093d13b5d5b97ed4b8a802fa4c9417b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveLoadTester
+--- !u!114 &1201474551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201474549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00fbaf13bd2d79b4bbaca17ffd8b570e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveLoadManager
+--- !u!4 &1201474552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201474549}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 802.915, y: 506.40787, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1204839682
 GameObject:
   m_ObjectHideFlags: 0
@@ -19794,3 +19851,4 @@ SceneRoots:
   - {fileID: 1673676685}
   - {fileID: 584677968}
   - {fileID: 1949688970}
+  - {fileID: 1201474552}
