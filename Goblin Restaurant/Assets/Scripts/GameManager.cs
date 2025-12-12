@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     [Header("UI 및 프리팹")]
     public List<GameObject> upgradeTableButtons;
     public int tablePrice = 100;
+    public int contertopPrice = 1000;
 
     public TextMeshProUGUI timeText;
     public TextMeshProUGUI dayText;
@@ -69,6 +70,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI todaysGoldText;
     public TextMeshProUGUI totalGoldText;
     public TextMeshProUGUI customerCountText;
+    public GameObject UpgradeCountertop;
 
     // UI 패널들
     public GameObject menuPlanner;
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
     public GameObject panelBlocker;
     public GameObject PopupManager;
     public GameObject UpgradeTablePanel;
+    public GameObject preparePanelToggleButton;
 
     // [삭제됨] 예전 employeeSubMenuPanel 변수는 더 이상 사용하지 않음
 
@@ -142,6 +145,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         currentState = GameState.Preparing;
+        if (PreparePanel != null) PreparePanel.SetActive(false);
         timeScale = (9 * 60 * 60) / dayDurationInSeconds;
         currentTimeOfDay = 9 * 3600;
         timeText.text = "09:00";
@@ -263,14 +267,20 @@ public class GameManager : MonoBehaviour
 
     private void UpdateButtonUI()
     {
-        PreparePanel.SetActive(currentState == GameState.Preparing);
         NextDayButton.SetActive(currentState == GameState.Settlement);
 
         if (OpenButton != null) OpenButton.gameObject.SetActive(currentState == GameState.Preparing);
+        if (preparePanelToggleButton != null) preparePanelToggleButton.SetActive(currentState == GameState.Preparing);
 
         bool isPreparing = (currentState == GameState.Preparing);
 
         if (TimeScaleButton != null) TimeScaleButton.gameObject.SetActive(currentState == GameState.Open);
+
+        if (UpgradeCountertop != null)
+        {
+            bool canShowButton = isPreparing && totalGoldAmount >= tablePrice;
+            UpgradeCountertop.SetActive(canShowButton);
+        }
 
         foreach (GameObject button in upgradeTableButtons)
         {
@@ -280,11 +290,7 @@ public class GameManager : MonoBehaviour
                 button.SetActive(canShowButton);
             }
         }
-
-
     }
-
-
 
     public void OpenTheStore()
     {
@@ -521,6 +527,14 @@ public class GameManager : MonoBehaviour
     {
         if (ingredientShopPanel != null) ingredientShopPanel.SetActive(true);
         if (recipeShopPanel != null) recipeShopPanel.SetActive(false);
+    }
+
+    public void TogglePreparePanel()
+    {
+        if (PreparePanel != null)
+        {
+            PreparePanel.SetActive(!PreparePanel.activeSelf);
+        }
     }
 
     // =========================================================================
