@@ -38,18 +38,18 @@ public class UpgradePanelController : MonoBehaviour
         currentType = UpgradeType.Table;
         currentTableButton = button; 
 
-        messageText.text = $"    ?\n(: {currentTableButton.GetPrice()} G)";
+        messageText.text = $"테이블을 추가하시겠습니까?\n(가격: {currentTableButton.GetPrice()} G)";
 
         OpenPanel();
     }
 
-    // 2. [ű]      
+    // 2. [신규] 화구 구매 창 표시
     public void ShowStovePanel(PlaceObjectButton button)
     {
         currentType = UpgradeType.Stove;
         currentStoveButton = button;
 
-        messageText.text = $"     ?\n(: {currentStoveButton.GetPrice()} G)";
+        messageText.text = $"화구를 추가하시겠습니까?\n(가격: {currentStoveButton.GetPrice()} G)";
 
         OpenPanel();
     }
@@ -64,7 +64,7 @@ public class UpgradePanelController : MonoBehaviour
 
     private void OnConfirm()
     {
-        //    
+        // 상황에 따라 다른 로직 실행
         if (currentType == UpgradeType.Table)
         {
             ConfirmTablePurchase();
@@ -75,7 +75,7 @@ public class UpgradePanelController : MonoBehaviour
         }
     }
 
-    //     (  )
+    // 테이블 구매 확정 (기존 코드)
     private void ConfirmTablePurchase()
     {
         if (GameManager.instance.totalGoldAmount >= currentTableButton.GetPrice())
@@ -91,14 +91,13 @@ public class UpgradePanelController : MonoBehaviour
         }
     }
 
-    //     (ű)
+    // 화구 구매 확정 (신규)
     private void ConfirmStovePurchase()
     {
         if (GameManager.instance.totalGoldAmount >= currentStoveButton.GetPrice())
         {
-            // GameManager         
             GameManager.instance.SpendGold(currentStoveButton.GetPrice());
-            RestaurantManager.instance.UnlockNextStove(); 
+            RestaurantManager.instance.AddStove(currentStoveButton.transform);
             currentStoveButton.SetPurchased();
             HidePanel();
         }
@@ -110,10 +109,10 @@ public class UpgradePanelController : MonoBehaviour
 
     private void OnInsufficientGold()
     {
-        Debug.Log("   !");
+        Debug.Log("골드가 부족합니다!");
         HidePanel();
         if (NotificationController.instance != null)
-            NotificationController.instance.ShowNotification("   !");
+            NotificationController.instance.ShowNotification("골드가 부족합니다!");
     }
 
     public void OnCancel()

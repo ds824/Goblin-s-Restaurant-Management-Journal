@@ -16,6 +16,8 @@ public class RestaurantManager : MonoBehaviour
     public Transform kitchenIdlePoint;
     [Tooltip("'홀' 역할 직원이 대기할 위치")]
     public Transform hallIdlePoint;
+    [Header("Placeable Objects")]
+    public GameObject stovePrefab;
 
     public List<CounterTop> counterTops = new List<CounterTop>();
 
@@ -56,17 +58,22 @@ public class RestaurantManager : MonoBehaviour
         }
     }
 
-    public bool UnlockNextStove()
+    public void AddStove(Transform buttonTransform)
     {
-        var nextStove = allCounterTops.FirstOrDefault(s => !s.gameObject.activeSelf);
-
-        if (nextStove != null)
+        if (stovePrefab == null)
         {
-            nextStove.gameObject.SetActive(true); // 활성화
-            RefreshActiveCounterTops(); // 리스트 갱신
-            return true; // 해금 성공
+            Debug.LogError("Stove prefab is not assigned in the RestaurantManager!");
+            return;
         }
-        return false; // 더 이상 해금할 화구가 없음 (만렙)
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(buttonTransform.position);
+        worldPosition.z = 0;
+        GameObject newStoveObject = Instantiate(stovePrefab, worldPosition, Quaternion.identity);
+        CounterTop newCounterTop = newStoveObject.GetComponent<CounterTop>();
+        if (newCounterTop != null)
+        {
+            allCounterTops.Add(newCounterTop);
+            RefreshActiveCounterTops();
+        }
     }
 
     /// <summary>
