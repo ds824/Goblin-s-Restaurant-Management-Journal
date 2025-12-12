@@ -58,16 +58,14 @@ public class RestaurantManager : MonoBehaviour
         }
     }
 
-    public void AddStove(Transform buttonTransform)
+    public void AddStove(Vector3 position)
     {
         if (stovePrefab == null)
         {
             Debug.LogError("Stove prefab is not assigned in the RestaurantManager!");
             return;
         }
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(buttonTransform.position);
-        worldPosition.z = 0;
-        GameObject newStoveObject = Instantiate(stovePrefab, worldPosition, Quaternion.identity);
+        GameObject newStoveObject = Instantiate(stovePrefab, position, Quaternion.identity);
         CounterTop newCounterTop = newStoveObject.GetComponent<CounterTop>();
         if (newCounterTop != null)
         {
