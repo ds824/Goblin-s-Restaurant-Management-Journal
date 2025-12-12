@@ -13,6 +13,14 @@ public class Table : MonoBehaviour
     public GameObject currentCustomer;
     public Transform seatPosition;
 
+    [Header("작업 위치 (서빙/청소)")]
+    public Transform interactionPoint;
+
+    public Vector3 GetInteractionPosition()
+    {
+        return interactionPoint != null ? interactionPoint.position : transform.position;
+    }
+
     public void Occupy(GameObject customer)
     {
         isOccupied = true;

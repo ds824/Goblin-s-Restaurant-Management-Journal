@@ -3,7 +3,10 @@ using UnityEngine.UI;
 
 public class PlaceObjectButton : MonoBehaviour
 {
+    public enum ObjectType { Table, Stove }
+    public ObjectType objectType;
     public int tablePrice = 100;
+    public int stovePrice = 1000;
 
 
     private Button myButton;
@@ -25,18 +28,47 @@ public class PlaceObjectButton : MonoBehaviour
         }
         if (shouldBeVisible && myButton != null)
         {
-            myButton.interactable = (GameManager.instance.totalGoldAmount >= tablePrice);
+            int price = 0;
+            if (objectType == ObjectType.Table)
+            {
+                price = tablePrice;
+            }
+            else if (objectType == ObjectType.Stove)
+            {
+                price = stovePrice;
+            }
+            myButton.interactable = (GameManager.instance.totalGoldAmount >= price);
         }
     }
 
     public void OnButtonClick()
     {
-        UpgradePanelController.instance.ShowPanel(this);
+        if (objectType == ObjectType.Table)
+        {
+            UpgradePanelController.instance.ShowTablePanel(this);
+        }
+        else if (objectType == ObjectType.Stove)
+        {
+            UpgradePanelController.instance.ShowStovePanel(this);
+        }
     }
 
     public void SetPurchased()
     {
         isPurchased = true;
-        gameObject.SetActive(false); // 구매 후 버튼을 영구적으로 숨김
+        gameObject.SetActive(false);
+    }
+
+    public int GetPrice()
+    {
+        if (objectType == ObjectType.Table)
+        {
+            return tablePrice;
+        }
+        else if (objectType == ObjectType.Stove)
+        {
+            return stovePrice;
+        }
+        return 0;
     }
 }

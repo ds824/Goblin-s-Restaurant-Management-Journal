@@ -87,20 +87,21 @@ public class Employee : MonoBehaviour
                 else currentState = EmployeeState.Idle;
                 break;
             case EmployeeState.MovingToCounterTop:
-                CheckArrived(targetCountertop.transform.position, () => { StartCoroutine(CookFoodCoroutine()); });
+                // 이동 목표는 GetTargetPositionByState에서 가져오므로 여기서는 도착 체크만 수행
+                CheckArrived(GetTargetPositionByState(), () => { StartCoroutine(CookFoodCoroutine()); });
                 break;
             case EmployeeState.Cooking: break;
             case EmployeeState.MovingToPickupFood:
-                CheckArrived(targetCountertop.transform.position, () => { StartCoroutine(PickupFoodCoroutine()); });
+                CheckArrived(GetTargetPositionByState(), () => { StartCoroutine(PickupFoodCoroutine()); });
                 break;
             case EmployeeState.MovingToServe:
-                CheckArrived(targetCustomer.transform.position, ServeFood);
+                CheckArrived(GetTargetPositionByState(), ServeFood);
                 break;
             case EmployeeState.CheckingTable:
                 CheckTable();
                 break;
             case EmployeeState.MovingToTable:
-                CheckArrived(targetTable.transform.position, () => { StartCoroutine(CleaningTable()); });
+                CheckArrived(GetTargetPositionByState(), () => { StartCoroutine(CleaningTable()); });
                 break;
             case EmployeeState.Cleaning: break;
         }
@@ -148,7 +149,7 @@ public class Employee : MonoBehaviour
             rb.linearVelocity = direction * finalMoveSpeed;
         }
 
-        // 4. 애니메이션 제어 (요청하신 부분)
+        // 4. 애니메이션 제어
         if (animator != null)
         {
             // 파라미터 초기화
@@ -167,10 +168,7 @@ public class Employee : MonoBehaviour
                 }
                 else // X축 이동이 더 클 경우 좌우 애니메이션
                 {
-                    // Walk_Side 애니메이션을 재생하기 위해 양수 값을 전달
                     animator.SetFloat("InputX", Mathf.Abs(direction.x));
-
-                    // 왼쪽(-x)으로 갈 때는 이미지를 반전시킴
                     if (spriteRenderer != null)
                     {
                         spriteRenderer.flipX = (direction.x < 0);
@@ -190,7 +188,6 @@ public class Employee : MonoBehaviour
         }
     }
 
-    // 멈춤 상태로 애니메이션 리셋
     void ResetAnimation()
     {
         if (animator != null)
@@ -223,25 +220,32 @@ public class Employee : MonoBehaviour
         }
     }
 
-    // 이하 기존 로직 함수들
-
+    // ▼▼▼ [수정됨] 상호작용 위치(InteractionPoint)를 반환하도록 변경 ▼▼▼
     Vector3 GetTargetPositionByState()
     {
         switch (currentState)
         {
             case EmployeeState.MovingToIdle:
                 return idlePosition != null ? idlePosition.position : Vector3.zero;
+
             case EmployeeState.MovingToCounterTop:
             case EmployeeState.MovingToPickupFood:
-                return targetCountertop != null ? targetCountertop.transform.position : Vector3.zero;
+                // targetCountertop.transform.position 대신 GetInteractionPosition() 사용
+                return targetCountertop != null ? targetCountertop.GetInteractionPosition() : Vector3.zero;
+
             case EmployeeState.MovingToServe:
+                // 손님 위치는 그대로 유지 (필요 시 손님 스크립트에도 interactionPoint 추가 가능)
                 return targetCustomer != null ? targetCustomer.transform.position : Vector3.zero;
+
             case EmployeeState.MovingToTable:
-                return targetTable != null ? targetTable.transform.position : Vector3.zero;
+                // targetTable.transform.position 대신 GetInteractionPosition() 사용
+                return targetTable != null ? targetTable.GetInteractionPosition() : Vector3.zero;
+
             default:
                 return Vector3.zero;
         }
     }
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
     float CalculateFinalSpeed()
     {
@@ -263,21 +267,18 @@ public class Employee : MonoBehaviour
             return;
         }
 
-        // 1. 미지정(Unassigned) 상태면 아무 일도 하지 않고 대기 (Waiting Area에 머뭄)
         if (employeeData.assignedRole == EmployeeRole.Unassigned)
         {
-            // (필요 시 대기 모션이나 로직 추가 가능)
             currentState = EmployeeState.Idle;
             return;
         }
 
-        // 2. [홀 서빙] 체크: 역할이 'Hall'이거나 'AllRounder'일 때
+        // [홀 서빙]
         if (employeeData.assignedRole == EmployeeRole.Hall ||
             employeeData.assignedRole == EmployeeRole.AllRounder)
         {
             if (RestaurantManager.instance != null)
             {
-                // 서빙할 음식이 있는지 찾기 (조리 완료된 음식)
                 targetOrder = RestaurantManager.instance.OrderQueue.FirstOrDefault(o =>
                     o != null &&
                     o.status == OrderStatus.ReadyToServe &&
@@ -288,27 +289,25 @@ public class Employee : MonoBehaviour
             if (targetOrder != null)
             {
                 Debug.Log($"{employeeData.firstName}: 홀 서빙 시작 (AllRounder/Hall)");
-                targetOrder.status = OrderStatus.Completed; // 픽업 중 상태로 변경
+                targetOrder.status = OrderStatus.Completed;
                 targetCustomer = targetOrder.customer;
                 targetCountertop = targetOrder.cookedOnCounterTop;
                 currentState = EmployeeState.MovingToPickupFood;
-                return; // 일을 찾았으니 함수 종료
+                return;
             }
         }
 
-        // 3. [주방 요리] 체크: 역할이 'Kitchen'이거나 'AllRounder'일 때
+        // [주방 요리]
         if (employeeData.assignedRole == EmployeeRole.Kitchen ||
             employeeData.assignedRole == EmployeeRole.AllRounder)
         {
             if (RestaurantManager.instance != null)
             {
-                // 요리할 주문이 있는지 찾기 (대기 중인 주문)
                 targetOrder = RestaurantManager.instance.OrderQueue.FirstOrDefault(o => o != null && o.status == OrderStatus.Pending);
             }
 
             if (targetOrder != null)
             {
-                // 빈 조리대 찾기
                 targetCountertop = RestaurantManager.instance.counterTops.FirstOrDefault(s => s != null && !s.isBeingUsed);
 
                 if (targetCountertop != null)
@@ -317,18 +316,17 @@ public class Employee : MonoBehaviour
                     targetOrder.status = OrderStatus.Cooking;
                     targetCountertop.isBeingUsed = true;
                     currentState = EmployeeState.MovingToCounterTop;
-                    return; // 일을 찾았으니 함수 종료
+                    return;
                 }
             }
         }
 
-        // 4. [홀 청소] 체크: 역할이 'Hall'이거나 'AllRounder'일 때
+        // [홀 청소]
         if (employeeData.assignedRole == EmployeeRole.Hall ||
             employeeData.assignedRole == EmployeeRole.AllRounder)
         {
             if (RestaurantManager.instance != null)
             {
-                // 더러운 테이블 찾기
                 targetTable = RestaurantManager.instance.tables.FirstOrDefault(t =>
                     t != null && t.isDirty && !t.isBeingUsedForCleaning);
             }
@@ -338,19 +336,23 @@ public class Employee : MonoBehaviour
                 Debug.Log($"{employeeData.firstName}: 테이블 청소 시작 (AllRounder/Hall)");
                 targetTable.isBeingUsedForCleaning = true;
                 currentState = EmployeeState.MovingToTable;
-                return; // 일을 찾았으니 함수 종료
+                return;
             }
         }
 
-        // 5. 할 일이 없으면 대기 위치(IdlePosition)로 복귀
         if (idlePosition != null && Vector2.Distance(transform.position, idlePosition.position) > 0.5f)
         {
             currentState = EmployeeState.MovingToIdle;
         }
     }
+
     IEnumerator CookFoodCoroutine()
     {
         currentState = EmployeeState.Cooking;
+        // 요리할 때 직원을 화구 상호작용 위치로 정확히 이동시킴 (미세 보정)
+        if (targetCountertop != null)
+            transform.position = targetCountertop.GetInteractionPosition();
+
         Debug.Log($"{employeeData?.firstName ?? "Worker"} {targetOrder.recipe.data.recipeName} 요리 시작");
 
         if (targetOrder.foodObject == null)
@@ -364,6 +366,7 @@ public class Employee : MonoBehaviour
             yield break;
         }
 
+        // 음식 오브젝트 위치 설정
         targetOrder.foodObject.transform.position = targetCountertop.transform.position;
         targetOrder.foodObject.SetActive(true);
 
@@ -371,10 +374,6 @@ public class Employee : MonoBehaviour
         if (targetOrder.recipe != null && targetOrder.recipe.data != null)
         {
             baseRecipeTime = targetOrder.recipe.data.baseCookTime;
-        }
-        else
-        {
-            Debug.LogError("CookFoodCoroutine targetOrder.recipe.data가 null입니다");
         }
 
         int baseCookingStat = employeeData.currentCookingStat;
@@ -476,6 +475,11 @@ public class Employee : MonoBehaviour
     IEnumerator CleaningTable()
     {
         currentState = EmployeeState.Cleaning;
+        
+        // 청소할 때도 정확한 위치로 보정
+        if(targetTable != null)
+             transform.position = targetTable.GetInteractionPosition();
+
         Debug.Log($"{employeeData?.firstName ?? "Worker"} 테이블 청소 시작");
 
         float baseCleaningTime = 3f;
@@ -519,6 +523,10 @@ public class Employee : MonoBehaviour
 
     IEnumerator PickupFoodCoroutine()
     {
+        // 픽업 위치 보정
+        if(targetCountertop != null)
+             transform.position = targetCountertop.GetInteractionPosition();
+
         if (targetOrder.foodObject != null)
         {
             Debug.Log($"{employeeData?.firstName ?? "Worker"} 픽업 완료");

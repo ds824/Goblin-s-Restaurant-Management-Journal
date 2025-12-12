@@ -17,10 +17,13 @@ public class RestaurantManager : MonoBehaviour
     [Tooltip("'홀' 역할 직원이 대기할 위치")]
     public Transform hallIdlePoint;
 
+    public List<CounterTop> counterTops = new List<CounterTop>();
+
+    public List<CounterTop> allCounterTops; 
+
     // 기존 필드
     public List<Customer> customers;
     public List<Table> tables;
-    public List<CounterTop> counterTops;
     public int cleanliness = 100; // 식당 청결도 (0 ~ 100)
     [SerializeField]
     private List<KitchenOrder> orderQueue;
@@ -34,6 +37,36 @@ public class RestaurantManager : MonoBehaviour
 
         customers = new List<Customer>();
         orderQueue = new List<KitchenOrder>();
+    }
+
+    void Start()
+    {
+        RefreshActiveCounterTops();
+    }
+
+    public void RefreshActiveCounterTops()
+    {
+        counterTops.Clear();
+        foreach (var stove in allCounterTops)
+        {
+            if (stove != null && stove.gameObject.activeSelf)
+            {
+                counterTops.Add(stove);
+            }
+        }
+    }
+
+    public bool UnlockNextStove()
+    {
+        var nextStove = allCounterTops.FirstOrDefault(s => !s.gameObject.activeSelf);
+
+        if (nextStove != null)
+        {
+            nextStove.gameObject.SetActive(true); // 활성화
+            RefreshActiveCounterTops(); // 리스트 갱신
+            return true; // 해금 성공
+        }
+        return false; // 더 이상 해금할 화구가 없음 (만렙)
     }
 
     /// <summary>

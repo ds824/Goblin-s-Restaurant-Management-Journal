@@ -14,6 +14,7 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
     public GameObject QuantityPopupPanel;
     public GameObject QuestPanel;
     public GameObject EmployeePanel;
+    public GameObject SettlementPanel;
 
     public GameObject PanelBlocker;
     public GameObject PopupManager;
@@ -55,6 +56,13 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
         if (QuantityPopupPanel != null && QuantityPopupPanel.activeSelf)
         {
             QuantityPopupPanel.SetActive(false);
+            return;
+        }
+
+        if (SettlementPanel != null && SettlementPanel.activeSelf)
+        {
+            SettlementPanel.SetActive(false);
+            PanelBlocker.SetActive(false);
             return;
         }
 

@@ -6,12 +6,19 @@ public class UpgradePanelController : MonoBehaviour
 {
     public static UpgradePanelController instance;
 
+    [Header("UI ")]
     public GameObject panel;
     public TextMeshProUGUI messageText;
     public Button confirmButton;
     public Button cancelButton;
 
-    private PlaceObjectButton currentButton;
+    //      (   vs  )
+    private enum UpgradeType { Table, Stove }
+    private UpgradeType currentType;
+
+    //  
+    private PlaceObjectButton currentTableButton; //   
+    private PlaceObjectButton currentStoveButton; //   
 
     void Awake()
     {
@@ -22,36 +29,91 @@ public class UpgradePanelController : MonoBehaviour
     {
         confirmButton.onClick.AddListener(OnConfirm);
         cancelButton.onClick.AddListener(OnCancel);
-
         panel.SetActive(false);
     }
 
-    public void ShowPanel(PlaceObjectButton button)
+    // 1. []      
+    public void ShowTablePanel(PlaceObjectButton button)
     {
-        currentButton = button; 
+        currentType = UpgradeType.Table;
+        currentTableButton = button; 
 
-        messageText.text = $"테이블을 구매하시겠습니까?\n(비용: {currentButton.tablePrice} G)";
+        messageText.text = $"    ?\n(: {currentTableButton.GetPrice()} G)";
 
+        OpenPanel();
+    }
+
+    // 2. [킥]      
+    public void ShowStovePanel(PlaceObjectButton button)
+    {
+        currentType = UpgradeType.Stove;
+        currentStoveButton = button;
+
+        messageText.text = $"     ?\n(: {currentStoveButton.GetPrice()} G)";
+
+        OpenPanel();
+    }
+
+    private void OpenPanel()
+    {
         panel.SetActive(true);
         panel.transform.SetAsLastSibling();
-        GameManager.instance.panelBlocker.SetActive(true);
+        if (GameManager.instance.panelBlocker != null) 
+            GameManager.instance.panelBlocker.SetActive(true);
     }
 
     private void OnConfirm()
     {
-        if (GameManager.instance.totalGoldAmount >= currentButton.tablePrice)
+        //    
+        if (currentType == UpgradeType.Table)
         {
-            GameManager.instance.AddTable(currentButton.transform);
-            
-            currentButton.SetPurchased();
+            ConfirmTablePurchase();
+        }
+        else if (currentType == UpgradeType.Stove)
+        {
+            ConfirmStovePurchase();
+        }
+    }
+
+    //     (  )
+    private void ConfirmTablePurchase()
+    {
+        if (GameManager.instance.totalGoldAmount >= currentTableButton.GetPrice())
+        {
+            GameManager.instance.SpendGold(currentTableButton.GetPrice());
+            GameManager.instance.AddTable(currentTableButton.transform);
+            currentTableButton.SetPurchased();
             HidePanel();
         }
         else
         {
-            Debug.Log("골드가 부족합니다!");
-            HidePanel();
-            NotificationController.instance.ShowNotification("골드가 부족합니다!");
+            OnInsufficientGold();
         }
+    }
+
+    //     (킥)
+    private void ConfirmStovePurchase()
+    {
+        if (GameManager.instance.totalGoldAmount >= currentStoveButton.GetPrice())
+        {
+            // GameManager         
+            GameManager.instance.SpendGold(currentStoveButton.GetPrice());
+            RestaurantManager.instance.UnlockNextStove(); 
+            currentStoveButton.SetPurchased();
+            HidePanel();
+        }
+        else
+        {
+            OnInsufficientGold();
+        }
+    }
+
+    private void OnInsufficientGold()
+    {
+        Debug.Log("   !");
+        HidePanel();
+        if (NotificationController.instance != null)
+            NotificationController.instance.ShowNotification("   !");
     }
 
     public void OnCancel()
@@ -62,6 +124,7 @@ public class UpgradePanelController : MonoBehaviour
     private void HidePanel()
     {
         panel.SetActive(false);
-        GameManager.instance.panelBlocker.SetActive(false);
+        if (GameManager.instance.panelBlocker != null) 
+            GameManager.instance.panelBlocker.SetActive(false);
     }
 }

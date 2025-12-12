@@ -280,7 +280,11 @@ public class GameManager : MonoBehaviour
                 button.SetActive(canShowButton);
             }
         }
+
+
     }
+
+
 
     public void OpenTheStore()
     {
@@ -344,6 +348,7 @@ public class GameManager : MonoBehaviour
     public void closeSettlementPanal()
     {
         settlementPanel.SetActive(false);
+        panelBlocker.SetActive(false);
         CheckButton.SetActive(false);
     }
 
@@ -354,6 +359,7 @@ public class GameManager : MonoBehaviour
         customerCountText.text = $"금일 방문객 수: {todaysCustomers}";
 
         settlementPanel.SetActive(true);
+        panelBlocker.SetActive(true);
         CheckButton.SetActive(true);
     }
 
