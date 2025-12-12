@@ -88,8 +88,6 @@ public class GameManager : MonoBehaviour
     public GameObject panelBlocker;
     public GameObject PopupManager;
     public GameObject UpgradeTablePanel;
-    public GameObject preparePanelToggleButton;
-
 
     // [삭제됨] 예전 employeeSubMenuPanel 변수는 더 이상 사용하지 않음
 
@@ -252,7 +250,7 @@ public class GameManager : MonoBehaviour
                 ShopManager.Instance.GenerateTodayItems(FameManager.instance.CurrentFamePoints);
             }
 
-            if (isEmployeeUnlocked && DayCount % 7 == 1)
+            if (isEmployeeUnlocked && DayCount >= 1)
             {
                 EmployeeManager.Instance.GenerateApplicants((int)FameManager.instance.CurrentFamePoints);
                 Debug.Log($"[GameManager] {DayCount}일차 아침, 새로운 지원자 생성.");
@@ -265,6 +263,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateButtonUI()
     {
+        PreparePanel.SetActive(currentState == GameState.Preparing);
         NextDayButton.SetActive(currentState == GameState.Settlement);
 
         if (OpenButton != null) OpenButton.gameObject.SetActive(currentState == GameState.Preparing);
@@ -272,8 +271,6 @@ public class GameManager : MonoBehaviour
         bool isPreparing = (currentState == GameState.Preparing);
 
         if (TimeScaleButton != null) TimeScaleButton.gameObject.SetActive(currentState == GameState.Open);
-
-        if (preparePanelToggleButton != null) preparePanelToggleButton.SetActive(isPreparing);
 
         foreach (GameObject button in upgradeTableButtons)
         {
@@ -283,14 +280,8 @@ public class GameManager : MonoBehaviour
                 button.SetActive(canShowButton);
             }
         }
-    }
 
-    public void TogglePreparePanel()
-    {
-        if (PreparePanel != null)
-        {
-            PreparePanel.SetActive(!PreparePanel.activeSelf);
-        }
+
     }
 
 
@@ -338,8 +329,6 @@ public class GameManager : MonoBehaviour
             // 2. (기존 로직) 상태 변경 및 영업 시작
             currentState = GameState.Open;
             if (menuPlanner != null) menuPlanner.SetActive(false);
-            if (PreparePanel != null) PreparePanel.SetActive(false);
-            if (preparePanelToggleButton != null) preparePanelToggleButton.SetActive(false);
 
             if (MenuPlanner.instance != null)
             {
