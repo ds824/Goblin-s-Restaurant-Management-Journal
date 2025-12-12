@@ -565,14 +565,12 @@ public class GameManager : MonoBehaviour
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
     }
 
-    public void AddTable(Transform buttonTransform)
+    public void AddTable(Vector3 position)
     {
         if (TablePrefab == null) return;
         totalGoldAmount -= tablePrice;
         totalGold.text = totalGoldAmount.ToString();
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(buttonTransform.position);
-        worldPosition.z = 0f;
-        GameObject newTableObject = Instantiate(TablePrefab, worldPosition, Quaternion.identity);
+        GameObject newTableObject = Instantiate(TablePrefab, position, Quaternion.identity);
         Table newTableComponent = newTableObject.GetComponent<Table>();
         if (newTableComponent != null && restaurantManager != null)
         {

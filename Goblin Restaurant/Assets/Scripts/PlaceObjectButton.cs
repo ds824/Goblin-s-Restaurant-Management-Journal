@@ -7,6 +7,7 @@ public class PlaceObjectButton : MonoBehaviour
     public ObjectType objectType;
     public int tablePrice = 100;
     public int stovePrice = 1000;
+    public Vector3 spawnPosition;
 
 
     private Button myButton;

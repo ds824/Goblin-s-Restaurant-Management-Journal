@@ -81,7 +81,7 @@ public class UpgradePanelController : MonoBehaviour
         if (GameManager.instance.totalGoldAmount >= currentTableButton.GetPrice())
         {
             GameManager.instance.SpendGold(currentTableButton.GetPrice());
-            GameManager.instance.AddTable(currentTableButton.transform);
+            GameManager.instance.AddTable(currentTableButton.spawnPosition);
             currentTableButton.SetPurchased();
             HidePanel();
         }
@@ -97,7 +97,7 @@ public class UpgradePanelController : MonoBehaviour
         if (GameManager.instance.totalGoldAmount >= currentStoveButton.GetPrice())
         {
             GameManager.instance.SpendGold(currentStoveButton.GetPrice());
-            RestaurantManager.instance.AddStove(currentStoveButton.transform);
+            RestaurantManager.instance.AddStove(currentStoveButton.spawnPosition);
             currentStoveButton.SetPurchased();
             HidePanel();
         }
