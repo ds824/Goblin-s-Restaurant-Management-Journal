@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour
     [Header("사이드 메뉴 버튼")]
     public Button btnRecipeBook;
     public Button btnEmployee;
+    public Button btnSaveGame;
+    public Button btnLoadGame;
 
     [Header("기능 해금 상태")]
     public bool isRecipeUnlocked = false;
@@ -758,10 +760,13 @@ public class GameManager : MonoBehaviour
         if (SaveLoadManager.Instance != null)
         {
             SaveLoadManager.Instance.SaveGame();
+            Debug.Log("[GameManager] 저장 버튼 클릭 - 게임 저장 요청");
         }
         else
         {
             Debug.LogError("[GameManager] SaveLoadManager를 찾을 수 없습니다!");
+            if (NotificationController.instance != null)
+                NotificationController.instance.ShowNotification("저장에 실패했습니다!");
         }
     }
 
@@ -772,11 +777,23 @@ public class GameManager : MonoBehaviour
     {
         if (SaveLoadManager.Instance != null)
         {
-            SaveLoadManager.Instance.LoadGame();
+            if (SaveLoadManager.Instance.HasSaveFile())
+            {
+                SaveLoadManager.Instance.LoadGame();
+                Debug.Log("[GameManager] 로드 버튼 클릭 - 게임 로드 요청");
+            }
+            else
+            {
+                Debug.LogWarning("[GameManager] 저장 파일이 없습니다.");
+                if (NotificationController.instance != null)
+                    NotificationController.instance.ShowNotification("저장 파일이 없습니다!");
+            }
         }
         else
         {
             Debug.LogError("[GameManager] SaveLoadManager를 찾을 수 없습니다!");
+            if (NotificationController.instance != null)
+                NotificationController.instance.ShowNotification("로드에 실패했습니다!");
         }
     }
 }

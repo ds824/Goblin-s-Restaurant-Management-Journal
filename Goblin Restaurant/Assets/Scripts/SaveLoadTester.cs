@@ -47,18 +47,19 @@ public class SaveLoadTester : MonoBehaviour
         }
     }
 
-    void OnGUI()
-    {
-        // 화면 왼쪽 상단에 저장/로드 단축키 안내 표시
-        GUI.Label(new Rect(10, 10, 300, 60),
-            "F5: 게임 저장\nF9: 게임 로드\nDelete: 저장 파일 삭제");
-
-        // 저장 파일 존재 여부 표시
-        if (SaveLoadManager.Instance != null)
-        {
-            bool hasSave = SaveLoadManager.Instance.HasSaveFile();
-            string saveStatus = hasSave ? "저장 파일 있음" : "저장 파일 없음";
-            GUI.Label(new Rect(10, 80, 200, 20), saveStatus);
-        }
-    }
+    // OnGUI 제거 - 새로운 UI 시스템으로 대체
+    // void OnGUI()
+    // {
+    //     // 화면 왼쪽 상단에 저장/로드 단축키 안내 표시
+    //     GUI.Label(new Rect(10, 10, 300, 60),
+    //         "F5: 게임 저장\nF9: 게임 로드\nDelete: 저장 파일 삭제");
+    //
+    //     // 저장 파일 존재 여부 표시
+    //     if (SaveLoadManager.Instance != null)
+    //     {
+    //         bool hasSave = SaveLoadManager.Instance.HasSaveFile();
+    //         string saveStatus = hasSave ? "저장 파일 있음" : "저장 파일 없음";
+    //         GUI.Label(new Rect(10, 80, 200, 20), saveStatus);
+    //     }
+    // }
 }
