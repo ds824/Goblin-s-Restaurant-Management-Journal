@@ -1471,7 +1471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RestaurantManager
   employeePrefab: {fileID: 3110601555778287819, guid: f6c2409b587d5154cb8e83f9ffdcad1b, type: 3}
   spawnPoint: {fileID: 1864346188}
-  kitchenIdlePoint: {fileID: 0}
+  kitchenIdlePoint: {fileID: 1013166369}
   hallIdlePoint: {fileID: 0}
   stovePrefab: {fileID: 4562995198452326686, guid: 34a8685c4181d904c9c85dd76fd741fb, type: 3}
   counterTops:
@@ -7527,7 +7527,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &685483907
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9405,7 +9405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 147ed761dcdff48459a6bf56f507aa7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FameManager
-  currentFamePoints: 1000
+  currentFamePoints: 0
   currentFameLevel: 0
 --- !u!114 &809728582
 MonoBehaviour:
@@ -11087,6 +11087,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1003125075}
   m_CullTransparentMesh: 1
+--- !u!4 &1013166369 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8064702134017852690, guid: 34a8685c4181d904c9c85dd76fd741fb, type: 3}
+  m_PrefabInstance: {fileID: 1501608340674881074}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1018134186
 GameObject:
   m_ObjectHideFlags: 0
@@ -21974,7 +21979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2043181332
 RectTransform:
   m_ObjectHideFlags: 0

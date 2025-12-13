@@ -668,15 +668,14 @@ public class GameManager : MonoBehaviour
 
     public void AddTable(Vector3 position)
     {
-        if (TablePrefab == null) return;
-        totalGoldAmount -= tablePrice;
-        totalGold.text = totalGoldAmount.ToString();
-        GameObject newTableObject = Instantiate(TablePrefab, position, Quaternion.identity);
-        Table newTableComponent = newTableObject.GetComponent<Table>();
-        if (newTableComponent != null && restaurantManager != null)
-        {
-            restaurantManager.tables.Add(newTableComponent);
-        }
+         if (TablePrefab == null) return;
+         totalGold.text = totalGoldAmount.ToString();
+         GameObject newTableObject = Instantiate(TablePrefab, position, Quaternion.identity);
+         Table newTableComponent = newTableObject.GetComponent<Table>();
+         if (newTableComponent != null && restaurantManager != null)
+         {
+             restaurantManager.tables.Add(newTableComponent);
+         }
     }
 
     public void HireAndSpawnEmployee(EmployeeData dataTemplate, GameObject prefabToSpawn)
