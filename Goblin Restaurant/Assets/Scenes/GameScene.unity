@@ -10646,8 +10646,8 @@ MonoBehaviour:
   restaurantManager: {fileID: 125082561}
   _currentState: 0
   dayDurationInSeconds: 150
-  totalGoldAmount: 2000
-  _dayCount: 7
+  totalGoldAmount: 500
+  _dayCount: 1
   mainCharacterTemplate: {fileID: 11400000, guid: 73599de3c8e5a6a41a97a5583acee7e8, type: 2}
   upgradeTableButtons:
   - {fileID: 1616242648}
