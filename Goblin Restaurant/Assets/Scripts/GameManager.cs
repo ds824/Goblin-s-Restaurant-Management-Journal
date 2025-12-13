@@ -335,7 +335,8 @@ public class GameManager : MonoBehaviour
             // 2. (기존 로직) 상태 변경 및 영업 시작
             currentState = GameState.Open;
             if (menuPlanner != null) menuPlanner.SetActive(false);
-
+            if (PreparePanel != null) PreparePanel.SetActive(false); 
+            
             if (MenuPlanner.instance != null)
             {
                 MenuPlanner.instance.ConsumeIngredientsForToday();

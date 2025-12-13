@@ -183,7 +183,7 @@ public class Customer : MonoBehaviour
     IEnumerator EatAndLeave()
     {
         Debug.Log("식사 시작");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(10f);
         Debug.Log("식사 완료");
 
         CalculateSatisfaction();
