@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> upgradeTableButtons;
     public int tablePrice = 100;
     public int contertopPrice = 1000;
+    public float savedGameSpeed = 1f;
 
     public TextMeshProUGUI timeText;
     public TextMeshProUGUI dayText;
@@ -144,10 +145,21 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         isPaused = false;
-        Time.timeScale = 1f;
+        Time.timeScale = savedGameSpeed;
 
         if (pausePanel != null) pausePanel.SetActive(false);
         if (panelBlocker != null) panelBlocker.SetActive(false);
+    }
+
+    public void SetGameSpeed(float speed)
+    {
+        savedGameSpeed = speed; // 변수에 저장
+
+        // 일시 정지 상태가 아닐 때만 즉시 적용
+        if (!isPaused)
+        {
+            Time.timeScale = savedGameSpeed;
+        }
     }
 
     public void OpenTutorialFromPause()
@@ -340,7 +352,7 @@ public class GameManager : MonoBehaviour
                 ShopManager.Instance.GenerateTodayItems(FameManager.instance.CurrentFamePoints);
             }
 
-            if (isEmployeeUnlocked && DayCount >= 1)
+            if (isEmployeeUnlocked && (DayCount - 1) % 7 ==0)
             {
                 EmployeeManager.Instance.GenerateApplicants((int)FameManager.instance.CurrentFamePoints);
                 Debug.Log($"[GameManager] {DayCount}일차 아침, 새로운 지원자 생성.");
@@ -488,12 +500,38 @@ public class GameManager : MonoBehaviour
 
     public void ChangeTimeScale()
     {
-        speedState = (speedState + 1) % 3;
+        // speedState: 0(1배속), 1(2배속), 2(일시정지)
+        speedState = (speedState + 1) % 2;
+
         switch (speedState)
         {
-            case 0: Time.timeScale = 1; TimeScaleButtonText.text = "X1"; break;
-            case 1: Time.timeScale = 2; TimeScaleButtonText.text = "X2"; break;
-            case 2: Time.timeScale = 0; TimeScaleButtonText.text = "||"; break;
+            case 0: // [1배속으로 변경]
+                TimeScaleButtonText.text = "X1";
+                
+                if (GameManager.instance != null)
+                {
+                    // 1. 매니저에 1배속으로 기억시킴
+                    GameManager.instance.SetGameSpeed(1f);
+                    
+                    // 2. 만약 일시정지 상태였다면 게임 재개
+                    if (GameManager.instance.isPaused) 
+                        GameManager.instance.ResumeGame();
+                }
+                break;
+
+            case 1: // [2배속으로 변경]
+                TimeScaleButtonText.text = "X2";
+                
+                if (GameManager.instance != null)
+                {
+                    // 1. 매니저에 2배속으로 기억시킴
+                    GameManager.instance.SetGameSpeed(2f);
+                    
+                    // 2. 만약 일시정지 상태였다면 게임 재개
+                    if (GameManager.instance.isPaused) 
+                        GameManager.instance.ResumeGame();
+                }
+                break;
         }
     }
 

@@ -10656,6 +10656,7 @@ MonoBehaviour:
   - {fileID: 2115172474}
   tablePrice: 100
   contertopPrice: 1000
+  savedGameSpeed: 1
   timeText: {fileID: 1564339060}
   dayText: {fileID: 2064170289}
   totalGold: {fileID: 1204839684}
@@ -10691,8 +10692,8 @@ MonoBehaviour:
   watchEndingButton: {fileID: 2049487117}
   btnRecipeBook: {fileID: 27131084}
   btnEmployee: {fileID: 1247922193}
-  isRecipeUnlocked: 1
-  isEmployeeUnlocked: 1
+  isRecipeUnlocked: 0
+  isEmployeeUnlocked: 0
   isPaused: 0
 --- !u!4 &989197970
 Transform:
