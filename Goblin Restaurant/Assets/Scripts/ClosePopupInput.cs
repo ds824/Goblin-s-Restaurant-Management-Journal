@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
 {
+    [Header("Panels")]
     public GameObject RecipeBookPanel;
     public GameObject ShopPanel;
     public GameObject InventoryPanel;
@@ -18,6 +19,7 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
 
     public GameObject PanelBlocker;
     public GameObject PopupManager;
+    
     private InputSystem_Actions inputActions;
 
     private void Awake()
@@ -27,32 +29,67 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
 
     void OnEnable()
     {
-        inputActions.UI.ClosePopup.performed += OnClosePopup;
         inputActions.UI.Enable();
+        
+        // 닫기 키 연결
+        inputActions.UI.ClosePopup.performed += OnClosePopup;
+        
+        // ESC(Pause) 키 연결
+        var pauseAction = inputActions.UI.Get().FindAction("Pause");
+        if (pauseAction != null)
+        {
+            pauseAction.performed += OnPauseInput;
+        }
     }
 
     private void OnDisable()
     {
         inputActions.UI.ClosePopup.performed -= OnClosePopup;
+        
+        var pauseAction = inputActions.UI.Get().FindAction("Pause");
+        if (pauseAction != null)
+        {
+            pauseAction.performed -= OnPauseInput;
+        }
+        
         inputActions.UI.Disable();
     }
 
+    // 닫기 버튼용
     private void OnClosePopup(InputAction.CallbackContext context)
     {
-        TryCloseTopPopup();
+        TryCloseTopPopup(); 
     }
 
+    // 마우스 우클릭용
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 마우스 우클릭일 경우
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             TryCloseTopPopup();
         }
     }
 
+    // ESC 키 입력용
+    public void OnPauseInput(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        // 로직이 TryCloseTopPopup에 통합되었으므로 호출만 합니다.
+        TryCloseTopPopup();
+    }
+
+    // ▼▼▼ [통합된 로직] 튜토리얼 -> 팝업 -> 일시정지 순서로 처리 ▼▼▼
     public void TryCloseTopPopup()
     {
+        // 1. [최우선] 튜토리얼 패널 확인
+        if (TutorialUIController.instance != null && 
+            TutorialUIController.instance.tutorialRootPanel.activeSelf)
+        {
+            TutorialUIController.instance.CloseTutorial();
+            return; // 닫았으니 종료
+        }
+
+        // 2. [차순위] 일반 팝업 및 업그레이드 패널 확인
         if (QuantityPopupPanel != null && QuantityPopupPanel.activeSelf)
         {
             QuantityPopupPanel.SetActive(false);
@@ -94,12 +131,20 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-
-
+        // 업그레이드 패널 (컨트롤러 경유)
         if (centralUpgradePanel != null && centralUpgradePanel.activeSelf)
         {
-            // 컨트롤러의 OnCancel 함수를 호출하여 패널과 블로커를 모두 닫음
-            centralUpgradePanel.GetComponent<UpgradePanelController>().OnCancel();
+            var controller = centralUpgradePanel.GetComponent<UpgradePanelController>();
+            if (controller != null)
+            {
+                controller.OnCancel();
+            }
+            else
+            {
+                centralUpgradePanel.SetActive(false);
+                if(GameManager.instance.panelBlocker != null) 
+                    GameManager.instance.panelBlocker.SetActive(false);
+            }
             return;
         }
 
@@ -129,7 +174,10 @@ public class ClosePopupInput : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        
+        // 3. [마지막] 아무것도 닫을 게 없었다면 -> 일시정지 토글
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.TogglePause();
+        }
     }
 }
-

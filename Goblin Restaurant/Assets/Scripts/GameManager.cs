@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -85,14 +86,16 @@ public class GameManager : MonoBehaviour
     public GameObject ingredientShopPanel;
     public GameObject RecipeBook;
     public GameObject QuestPanel;
+    public GameObject pausePanel;
 
     public Button TimeScaleButton;
     public GameObject panelBlocker;
     public GameObject PopupManager;
     public GameObject UpgradeTablePanel;
     public GameObject preparePanelToggleButton;
+    public GameObject endingPanel; 
+    public GameObject watchEndingButton;
 
-    // [삭제됨] 예전 employeeSubMenuPanel 변수는 더 이상 사용하지 않음
 
     [Header("사이드 메뉴 버튼")]
     public Button btnRecipeBook;
@@ -101,8 +104,10 @@ public class GameManager : MonoBehaviour
     [Header("기능 해금 상태")]
     public bool isRecipeUnlocked = false;
     public bool isEmployeeUnlocked = false;
+    public bool isPaused = false;
 
     private InputSystem_Actions inputActions;
+    private ClosePopupInput closePopupInput;
 
     private void Awake()
     {
@@ -117,16 +122,97 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
+        closePopupInput = FindObjectOfType<ClosePopupInput>(true);
+    }
+
+    public void TogglePause()
+    {
+        if (isPaused) ResumeGame();
+        else PauseGame();
+    }
+
+    public void PauseGame()
+    {
+        isPaused = true;
+        Time.timeScale = 0f;
+
+        if (panelBlocker != null) panelBlocker.SetActive(true);
+        if (pausePanel != null) pausePanel.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        isPaused = false;
+        Time.timeScale = 1f;
+
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (panelBlocker != null) panelBlocker.SetActive(false);
+    }
+
+    public void OpenTutorialFromPause()
+    {
+        if (pausePanel != null) pausePanel.SetActive(false);
+        
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.OpenTutorial();
+        }
+    }
+
+    public void ReturnToTitle()
+    {
+        Time.timeScale = 1f; 
+        SceneManager.LoadScene("TitleScene");
+    }
+
+    public void UnlockEndingButton()
+    {
+        if (watchEndingButton != null)
+        {
+            watchEndingButton.SetActive(true);
+            
+            if (NotificationController.instance != null)
+                NotificationController.instance.ShowNotification("엔딩을 볼 수 있습니다!");
+        }
+    }
+
+    public void ShowEnding()
+    {
+        Time.timeScale = 0f; 
+
+        if (endingPanel != null)
+        {
+            endingPanel.SetActive(true);
+            endingPanel.transform.SetAsLastSibling(); 
+        }
     }
 
     private void OnEnable()
     {
         inputActions.Enable();
+        inputActions.UI.ClosePopup.performed += OnGlobalClosePopup;
     }
 
     private void OnDisable()
     {
+        inputActions.UI.ClosePopup.performed -= OnGlobalClosePopup;
         inputActions.Disable();
+    }
+
+    private void OnGlobalClosePopup(InputAction.CallbackContext context)
+    {
+        // 만약 팝업이 이미 열려있다면, ClosePopupInput 스크립트가 처리를 담당하므로 여기서는 무시.
+        if (PopupManager != null && PopupManager.activeSelf)
+        {
+            return;
+        }
+
+        // 팝업이 없는 상태에서 입력을 받으면, 최상위 팝업 닫기 시도 (결과적으로 Pause가 호출될 것)
+        if (closePopupInput != null)
+        {
+            closePopupInput.TryCloseTopPopup();
+        }
     }
 
     void CreateMainCharacter()
@@ -336,7 +422,7 @@ public class GameManager : MonoBehaviour
             currentState = GameState.Open;
             if (menuPlanner != null) menuPlanner.SetActive(false);
             if (PreparePanel != null) PreparePanel.SetActive(false); 
-            
+
             if (MenuPlanner.instance != null)
             {
                 MenuPlanner.instance.ConsumeIngredientsForToday();

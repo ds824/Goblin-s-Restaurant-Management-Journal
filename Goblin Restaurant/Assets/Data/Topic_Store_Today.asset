@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd6c95bd54013146b26e3bc01170540, type: 3}
+  m_Name: Topic_Store_Today
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialData
+  topicTitle: "\uC624\uB298\uC758 \uC0C1\uD488"
+  steps:
+  - description: "\uB9E4\uC77C, \uAC00\uACA9 \uBCC0\uB3D9\uC774 \uC788\uB294 \uC7AC\uB8CC\uB97C
+      \uD55C\uC815 \uC218\uB7C9 \uD310\uB9E4\uD569\uB2C8\uB2E4."
+    contentImage: {fileID: 7087206922149344882, guid: db60e208fb607754ea543d81977d8fc6, type: 3}

@@ -133,6 +133,14 @@ public class QuestManager : MonoBehaviour
         quest.isRewardClaimed = true;
         GiveReward(quest.reward);
         
+        if (quest.id == 4014)
+        {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.UnlockEndingButton();
+            }
+        }
+
         CheckUnlockConditions();
         
         OnQuestUpdated?.Invoke();

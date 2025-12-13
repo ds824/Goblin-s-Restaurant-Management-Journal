@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd6c95bd54013146b26e3bc01170540, type: 3}
+  m_Name: Topic_Recipe_Ingredient
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialData
+  topicTitle: "\uC7AC\uB8CC"
+  steps:
+  - description: "\uB808\uC2DC\uD53C \uBA54\uB274\uC758 \uC7AC\uB8CC \uD0ED\uC5D0\uC11C
+      \uC0AC\uC6A9\uD560 \uC218 \uC788\uB294 \uAE30\uB2A5\uC785\uB2C8\uB2E4.\n\uC2DD\uC7AC\uB8CC\uC758
+      \uB4F1\uAE09, \uBCF4\uC720\uB7C9, \uC0AC\uC6A9\uB418\uB294 \uBA54\uB274\uB97C
+      \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    contentImage: {fileID: -8788364193004297680, guid: f8c2c7451f9b2a84eb03c1f2dc63084e, type: 3}
